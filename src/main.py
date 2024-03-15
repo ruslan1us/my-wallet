@@ -10,6 +10,7 @@ from src.database import create_tables, delete_tables
 
 from fastapi_users import FastAPIUsers
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await create_tables()
