@@ -1,15 +1,19 @@
-from datetime import datetime
-from sqlalchemy import Column, String, TIMESTAMP, Boolean
+from datetime import datetime, timezone, UTC
+from sqlalchemy import String, TIMESTAMP, Boolean
 from fastapi_users.db import SQLAlchemyBaseUserTable
 from sqlalchemy.orm import Mapped, mapped_column
 
-from src.database import Base
+from src.base_maker import Base
 
+def get_datetime():
+    return datetime.utcnow()
 
 class User(SQLAlchemyBaseUserTable[int], Base):
+    __tablename__ = 'users'
+
     id: Mapped[int] = mapped_column(primary_key=True)
-    username = Mapped[str]
-    registered_at = Column(TIMESTAMP, default=datetime.utcnow)
+    username: Mapped[str] = mapped_column(String(length=100), nullable=False)
+    registered_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
     email: Mapped[str] = mapped_column(
         String(length=320), unique=True, index=True, nullable=False
     )
