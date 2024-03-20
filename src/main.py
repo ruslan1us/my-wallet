@@ -10,10 +10,12 @@ from src.database import create_tables, delete_tables
 
 from fastapi_users import FastAPIUsers
 
+from src.api.expense.router import router as expense_router
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await create_tables()
+    # await create_tables()
     print('Starting...')
     yield
     # await delete_tables()
@@ -48,15 +50,17 @@ app.include_router(
     tags=["auth"],
 )
 
-current_user = fastapi_users.current_user(verified=True)
+app.include_router(expense_router)
 
-
-@app.get("/protected-route")
-def protected_route(user: User = Depends(current_user)):
-    return f"Hello, {user.username}"
-
-
-@app.get("/unprotected-route")
-def unprotected_route():
-    return f"Hello, World!"
+# current_user = fastapi_users.current_user(verified=True)
+#
+#
+# @app.get("/protected-route")
+# def protected_route(user: User = Depends(current_user)):
+#     return f"Hello, {user.username}"
+#
+#
+# @app.get("/unprotected-route")
+# def unprotected_route():
+#     return f"Hello, World!"
 

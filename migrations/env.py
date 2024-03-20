@@ -10,6 +10,14 @@ from alembic import context
 from src.config import DB_USER, DB_HOST, DB_NAME, DB_PASS, DB_PORT
 from src.base_maker import Base
 
+from src.api.auth.models import User
+from src.api.expense.models import MoneySpinnerTable, Expense
+from src.api.income.models import Salary, Tip
+
+import os
+import sys
+
+sys.path.append(os.path.join(sys.path[0], 'src'))
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

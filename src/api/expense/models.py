@@ -4,6 +4,8 @@ from sqlalchemy import Column, TIMESTAMP,ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 from src.base_maker import Base
 
+from src.api.time_func import set_date
+
 
 class MoneySpinnerTable(Base):
     __tablename__ = 'money_spinner'
@@ -19,6 +21,6 @@ class Expense(Base):
     name: Mapped[str]
     amount: Mapped[float]
     description: Mapped[str | None]
-    expensed_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+    expensed_at: Mapped[datetime] = mapped_column(default=set_date)
     expense_place: Mapped[int] = mapped_column(ForeignKey('money_spinner.id'))
 

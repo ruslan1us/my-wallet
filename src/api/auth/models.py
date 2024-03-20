@@ -5,15 +5,15 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from src.base_maker import Base
 
-def get_datetime():
-    return datetime.utcnow()
+from src.api.time_func import set_date
+
 
 class User(SQLAlchemyBaseUserTable[int], Base):
     __tablename__ = 'users'
 
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(String(length=100), nullable=False)
-    registered_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+    registered_at: Mapped[datetime] = mapped_column(default=set_date)
     email: Mapped[str] = mapped_column(
         String(length=320), unique=True, index=True, nullable=False
     )
