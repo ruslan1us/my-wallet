@@ -10,7 +10,8 @@ from src.database import create_tables, delete_tables
 
 from fastapi_users import FastAPIUsers
 
-from src.api.expense.router import router as expense_router
+from src.api.expense.money_spinner_router import router as money_spinner_router
+from src.api.expense.expense_router import router as expense_router
 
 
 @asynccontextmanager
@@ -52,13 +53,15 @@ app.include_router(
 
 app.include_router(expense_router)
 
+app.include_router(money_spinner_router)
+
 # current_user = fastapi_users.current_user(verified=True)
 #
 #
 # @app.get("/protected-route")
 # def protected_route(user: User = Depends(current_user)):
 #     return f"Hello, {user.username}"
-#
+
 #
 # @app.get("/unprotected-route")
 # def unprotected_route():

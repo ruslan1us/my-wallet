@@ -9,13 +9,20 @@ class ExpenseCreate(BaseModel):
     name: str
     amount: float
     description: Optional[str] = None
-    # expensed_at: Optional[datetime] = datetime.utcnow
     expense_place: int
 
 
 class ExpenseRead(ExpenseCreate):
     id: int
     expensed_at: Optional[datetime] = datetime.utcnow
+
+
+class ExpenseUpdate(BaseModel):
+    name: str
+    amount: float
+    description: Optional[str] = None
+    expensed_at: Optional[datetime] = datetime.utcnow
+    expense_place: int
 
 
 class MoneySpinnerCreate(BaseModel):
