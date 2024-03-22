@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, insert
+from sqlalchemy import select
 from fastapi.exceptions import HTTPException
 
 from src.api.expense.models import MoneySpinnerTable
