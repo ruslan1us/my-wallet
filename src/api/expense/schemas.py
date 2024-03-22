@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel
-from sqlalchemy import TIMESTAMP
 
 
 class ExpenseCreate(BaseModel):
@@ -15,6 +14,7 @@ class ExpenseCreate(BaseModel):
 class ExpenseRead(ExpenseCreate):
     id: int
     expensed_at: Optional[datetime] = datetime.utcnow
+    owner: int
 
 
 class ExpenseUpdate(BaseModel):
@@ -31,3 +31,4 @@ class MoneySpinnerCreate(BaseModel):
 
 class MoneySpinnerRead(MoneySpinnerCreate):
     id: int
+    owner: int

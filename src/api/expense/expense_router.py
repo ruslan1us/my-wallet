@@ -1,4 +1,4 @@
-from sqlalchemy import select, insert
+from sqlalchemy import select
 
 from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
@@ -29,13 +29,13 @@ fastapi_users = FastAPIUsers[User, int](
 current_user = fastapi_users.current_user()
 
 
-@router.get('/{expense_id}', status_code=200)
-async def get_expense_by_id(expense_id: int, session: AsyncSession = Depends(get_async_session),
-                       user: User = Depends(current_user)):
+@router.get('/{user_expenses}', status_code=200)
+async def get_expenses_by_user_id(session: AsyncSession = Depends(get_async_session),
+                                  user: User = Depends(current_user)):
     try:
-        query = select(Expense).where(Expense.id == expense_id)
+        query = select(Expense).where(Expense.owner_id == user.id)
         query_result = await session.execute(query)
-        result = query_result.scalar()
+        result = query_result.scalars().all()
 
         if result is None:
             raise Exception
@@ -45,12 +45,12 @@ async def get_expense_by_id(expense_id: int, session: AsyncSession = Depends(get
                 'data': result,
                 'details': None
         }
-    except:
+    except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=
         {
             'status': 'NOT_FOUND',
             'data': None,
-            'details': f'No expense with id: {expense_id}'
+            'details': f'No expenses on this user: {user.id}'
         })
 
 
@@ -58,7 +58,7 @@ async def get_expense_by_id(expense_id: int, session: AsyncSession = Depends(get
 async def add_expense(expense: ExpenseCreate, session: AsyncSession = Depends(get_async_session),
                       user: User = Depends(current_user)):
     try:
-        new_expense = Expense(**expense.model_dump())
+        new_expense = Expense(**expense.model_dump(), owner_id=user.id)
 
         session.add(new_expense)
         await session.commit()

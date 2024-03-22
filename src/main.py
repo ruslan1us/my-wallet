@@ -54,16 +54,3 @@ app.include_router(
 app.include_router(expense_router)
 
 app.include_router(money_spinner_router)
-
-# current_user = fastapi_users.current_user(verified=True)
-#
-#
-# @app.get("/protected-route")
-# def protected_route(user: User = Depends(current_user)):
-#     return f"Hello, {user.username}"
-
-#
-# @app.get("/unprotected-route")
-# def unprotected_route():
-#     return f"Hello, World!"
-
