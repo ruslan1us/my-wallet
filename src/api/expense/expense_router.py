@@ -35,8 +35,8 @@ current_user = fastapi_users.current_user()
 
 
 @router.get('/expenses', status_code=200, response_model=List[MoneySpinnerReadWithExpenses])
-async def get_expenses_by_user_id(session: AsyncSession = Depends(get_async_session),
-                                  user: User = Depends(current_user)):
+async def get_expenses_by_user(session: AsyncSession = Depends(get_async_session),
+                               user: User = Depends(current_user)):
     query = (select(MoneySpinnerTable).options(joinedload(MoneySpinnerTable.expenses))
                                       .where(MoneySpinnerTable.owner_id == user.id))
     query_result = await session.execute(query)
@@ -69,3 +69,16 @@ async def add_expense(expense: ExpenseCreate, session: AsyncSession = Depends(ge
             'data': None,
             'details': None
         })
+
+
+@router.delete('/', status_code=204)
+async def delete_expense_by_id(expense_id: int,
+                               session: AsyncSession = Depends(get_async_session),
+                               user: User = Depends(current_user)):
+    expense = await session.get(Expense, expense_id)
+
+    if not expense:
+        raise HTTPException(status_code=404, detail=f'No expense with this id: {expense_id}')
+
+    await session.delete(expense)
+    await session.commit()

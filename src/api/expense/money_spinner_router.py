@@ -67,25 +67,14 @@ async def add_money_spinner(money_spinner: MoneySpinnerCreate,
         })
 
 
-@router.delete('/')
+@router.delete('/', status_code=204)
 async def delete_money_spinner_by_id(money_spinner_id: int,
                                      session: AsyncSession = Depends(get_async_session),
                                      user: User = Depends(current_user)):
     money_spinner = await session.get(MoneySpinnerTable, money_spinner_id)
+
     if not money_spinner:
-        raise HTTPException(status_code=404, detail=
-        {
-            'status': "NOT_FOUND",
-            'data': None,
-            'detail': f'No money-spinner with this id: {money_spinner_id}'
-        })
+        raise HTTPException(status_code=404, detail=f'No expense with this id: {money_spinner_id}')
+
     await session.delete(money_spinner)
     await session.commit()
-
-    return HTTPException(status_code=204, detail=
-    {
-        'status': 'NO_CONTENT',
-        'data': None,
-        'detail': f'Successfully deleted {money_spinner_id}'
-    })
-
