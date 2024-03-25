@@ -13,6 +13,7 @@ from fastapi_users import FastAPIUsers
 
 from src.api.expense.money_spinner_router import router as money_spinner_router
 from src.api.expense.expense_router import router as expense_router
+from src.api.income.income_router import router as income_router
 
 
 @asynccontextmanager
@@ -55,6 +56,8 @@ app.include_router(
 app.include_router(expense_router)
 
 app.include_router(money_spinner_router)
+
+app.include_router(income_router)
 
 if __name__ == "__main__":
     uvicorn.run(app=app)
