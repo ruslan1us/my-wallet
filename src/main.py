@@ -1,3 +1,4 @@
+import uvicorn
 from fastapi import FastAPI, Depends, status
 
 from contextlib import asynccontextmanager
@@ -54,3 +55,6 @@ app.include_router(
 app.include_router(expense_router)
 
 app.include_router(money_spinner_router)
+
+if __name__ == "__main__":
+    uvicorn.run(app=app)

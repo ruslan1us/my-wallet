@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.base_maker import Base
 
@@ -14,6 +14,7 @@ class MoneySpinnerTable(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(unique=True)
     owner_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
+    expenses: Mapped[list["Expense"]] = relationship("Expense")
 
 
 class Expense(Base):

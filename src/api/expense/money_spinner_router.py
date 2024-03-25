@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
@@ -7,7 +9,7 @@ from fastapi.exceptions import HTTPException
 from src.api.auth.auth import auth_backend
 from src.api.auth.manager import get_user_manager
 from src.api.auth.models import User
-from src.api.expense.schemas import MoneySpinnerCreate
+from src.api.expense.schemas import MoneySpinnerCreate, MoneySpinnerReadWithoutExpenses
 from src.database import get_async_session
 
 from src.api.expense.models import MoneySpinnerTable
@@ -29,29 +31,16 @@ fastapi_users = FastAPIUsers[User, int](
 current_user = fastapi_users.current_user()
 
 
-@router.get('/{user_money_spinners}')
+@router.get('/user_money_spinners', response_model=List[MoneySpinnerReadWithoutExpenses])
 async def get_money_spinners_by_user(session: AsyncSession = Depends(get_async_session),
                                      user: User = Depends(current_user)):
-    try:
-        query = select(MoneySpinnerTable).where(MoneySpinnerTable.owner_id == user.id)
-        query_result = await session.execute(query)
-        result = query_result.scalars().all()
+    query = select(MoneySpinnerTable).where(MoneySpinnerTable.owner_id == user.id)
+    query_result = await session.execute(query)
+    result = query_result.scalars().all()
 
-        if result is None:
-            raise Exception
-
-        return {
-                'status': 'OK',
-                'data': result,
-                'details': None
-        }
-    except Exception:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=
-        {
-            'status': 'NOT_FOUND',
-            'data': None,
-            'details': f'No money-spinner related with this user: {user.id}'
-        })
+    if result == []:
+        raise HTTPException(status_code=404, detail='You have no money-spinners')
+    return result
 
 
 @router.post('/', status_code=201)

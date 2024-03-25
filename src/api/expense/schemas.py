@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel
 
@@ -11,10 +11,12 @@ class ExpenseCreate(BaseModel):
     expense_place: int
 
 
-class ExpenseRead(ExpenseCreate):
+class ExpenseRead(BaseModel):
     id: int
+    name: str
+    amount: float
     expensed_at: Optional[datetime] = datetime.utcnow
-    owner: int
+    description: Optional[str] = None
 
 
 class ExpenseUpdate(BaseModel):
@@ -29,6 +31,9 @@ class MoneySpinnerCreate(BaseModel):
     name: str
 
 
-class MoneySpinnerRead(MoneySpinnerCreate):
+class MoneySpinnerReadWithoutExpenses(MoneySpinnerCreate):
     id: int
-    owner: int
+
+
+class MoneySpinnerReadWithExpenses(MoneySpinnerReadWithoutExpenses):
+    expenses: List[ExpenseRead]
