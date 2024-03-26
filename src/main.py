@@ -1,19 +1,18 @@
 import uvicorn
-from fastapi import FastAPI, Depends, status
+from fastapi import FastAPI
 
 from contextlib import asynccontextmanager
 
 from src.api.auth.auth import auth_backend
 from src.api.auth.manager import get_user_manager
 from src.api.auth.models import User
-from src.api.auth.schemas import UserRead, UserCreate, UserUpdate
-from src.database import create_tables, delete_tables
+from src.api.auth.schemas import UserRead, UserCreate
 
 from fastapi_users import FastAPIUsers
 
-from src.api.expense.money_spinner_router import router as money_spinner_router
-from src.api.expense.expense_router import router as expense_router
-from src.api.income.income_router import router as income_router
+from src.api.routers.money_spinner_router import router as money_spinner_router
+from src.api.routers.expense_router import router as expense_router
+from src.api.routers.income_router import router as income_router
 
 
 @asynccontextmanager
