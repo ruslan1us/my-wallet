@@ -10,6 +10,8 @@ from src.api.expense.schemas import ExpenseCreate, MoneySpinnerCreate
 
 from fastapi_users import FastAPIUsers
 
+from src.api.income.models import Salary
+from src.api.income.schemas import SalaryCreate
 
 fastapi_users = FastAPIUsers[User, int](
     get_user_manager,
@@ -86,3 +88,37 @@ class CRUDmoneyspinner:
         await session.commit()
 
         return money_spinner
+
+
+class CRUDincome:
+    @staticmethod
+    async def get_all_salary(session: AsyncSession,
+                             user):
+        query = select(Salary).where(Salary.owner_id == user.id)
+        query_result = await session.execute(query)
+        result = query_result.scalars().all()
+
+        return result
+
+    @staticmethod
+    async def add_salary(salary: SalaryCreate,
+                         session: AsyncSession,
+                         user):
+        new_salary = Salary(**salary.model_dump(), owner_id=user.id)
+
+        session.add(new_salary)
+        await session.commit()
+        await session.refresh(new_salary)
+
+        return new_salary
+
+    @staticmethod
+    async def delete_salary_by_id(salary_id: int,
+                                  session: AsyncSession,
+                                  user):
+        salary = await session.get(Salary, salary_id)
+
+        await session.delete(salary)
+        await session.commit()
+
+        return salary
