@@ -6,7 +6,7 @@ from src.api.auth.auth import auth_backend
 from src.api.auth.manager import get_user_manager
 from src.api.auth.models import User
 from src.api.expense.models import MoneySpinnerTable, Expense
-from src.api.expense.schemas import ExpenseCreate
+from src.api.expense.schemas import ExpenseCreate, MoneySpinnerCreate
 
 from fastapi_users import FastAPIUsers
 
@@ -52,3 +52,37 @@ class CRUDexpense:
         await session.commit()
 
         return expense
+
+
+class CRUDmoneyspinner:
+    @staticmethod
+    async def get_money_spinners_by_user(session: AsyncSession,
+                                         user):
+        query = select(MoneySpinnerTable).where(MoneySpinnerTable.owner_id == user.id)
+        query_result = await session.execute(query)
+        result = query_result.scalars().all()
+
+        return result
+
+    @staticmethod
+    async def add_money_spinner(money_spinner: MoneySpinnerCreate,
+                                session: AsyncSession,
+                                user):
+        new_money_spinner = MoneySpinnerTable(**money_spinner.model_dump(), owner_id=user.id)
+
+        session.add(new_money_spinner)
+        await session.commit()
+        await session.refresh(new_money_spinner)
+
+        return new_money_spinner
+
+    @staticmethod
+    async def delete_money_spinner_by_id(money_spinner_id: int,
+                                         session: AsyncSession,
+                                         user):
+        money_spinner = await session.get(MoneySpinnerTable, money_spinner_id)
+
+        await session.delete(money_spinner)
+        await session.commit()
+
+        return money_spinner
