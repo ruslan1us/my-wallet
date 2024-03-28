@@ -14,6 +14,8 @@ from src.api.routers.tip_router import router as tip_router
 from src.api.routers.money_spinner_router import router as money_spinner_router
 from src.api.routers.expense_router import router as expense_router
 from src.api.routers.income_router import router as income_router
+from src.api.routers.auth_routers import router as auth_router
+from src.api.routers.auth_routers import jwt_router as jwt_auth_router
 
 
 @asynccontextmanager
@@ -34,24 +36,9 @@ fastapi_users = FastAPIUsers[User, int](
     [auth_backend],
 )
 
+app.include_router(auth_router)
 
-app.include_router(
-    fastapi_users.get_auth_router(auth_backend),
-    prefix="/auth/jwt",
-    tags=["auth"],
-)
-
-app.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate),
-    prefix="/auth",
-    tags=["auth"],
-)
-
-app.include_router(
-    fastapi_users.get_verify_router(UserRead),
-    prefix="/auth",
-    tags=["auth"],
-)
+app.include_router(jwt_auth_router)
 
 app.include_router(expense_router)
 
