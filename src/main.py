@@ -6,7 +6,6 @@ from contextlib import asynccontextmanager
 from src.api.auth.auth import auth_backend
 from src.api.auth.manager import get_user_manager
 from src.api.auth.models import User
-from src.api.auth.schemas import UserRead, UserCreate
 
 from fastapi_users import FastAPIUsers
 
@@ -36,17 +35,16 @@ fastapi_users = FastAPIUsers[User, int](
     [auth_backend],
 )
 
-app.include_router(auth_router)
+ROUTERS = [
+    auth_router,
+    jwt_auth_router,
+    expense_router,
+    money_spinner_router,
+    income_router,
+    tip_router
+]
 
-app.include_router(jwt_auth_router)
-
-app.include_router(expense_router)
-
-app.include_router(money_spinner_router)
-
-app.include_router(income_router)
-
-app.include_router(tip_router)
+[app.include_router(router) for router in ROUTERS]
 
 if __name__ == "__main__":
     uvicorn.run(app=app)
