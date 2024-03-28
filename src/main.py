@@ -10,6 +10,7 @@ from src.api.auth.schemas import UserRead, UserCreate
 
 from fastapi_users import FastAPIUsers
 
+from src.api.routers.tip_router import router as tip_router
 from src.api.routers.money_spinner_router import router as money_spinner_router
 from src.api.routers.expense_router import router as expense_router
 from src.api.routers.income_router import router as income_router
@@ -57,6 +58,8 @@ app.include_router(expense_router)
 app.include_router(money_spinner_router)
 
 app.include_router(income_router)
+
+app.include_router(tip_router)
 
 if __name__ == "__main__":
     uvicorn.run(app=app)

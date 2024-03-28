@@ -10,8 +10,8 @@ from src.api.expense.schemas import ExpenseCreate, MoneySpinnerCreate
 
 from fastapi_users import FastAPIUsers
 
-from src.api.income.models import Salary
-from src.api.income.schemas import SalaryCreate
+from src.api.income.models import Salary, Tip
+from src.api.income.schemas import SalaryCreate, TipCreate
 
 fastapi_users = FastAPIUsers[User, int](
     get_user_manager,
@@ -122,3 +122,37 @@ class CRUDincome:
         await session.commit()
 
         return salary
+
+
+class CRUDtip:
+    @staticmethod
+    async def add_tip(tip: TipCreate,
+                      session: AsyncSession,
+                      user):
+        new_tip = Tip(**tip.model_dump(), owner_id=user.id)
+
+        session.add(new_tip)
+        await session.commit()
+        await session.refresh(new_tip)
+
+        return new_tip
+
+    @staticmethod
+    async def get_all_tips(session: AsyncSession,
+                           user):
+        query = select(Tip).where(Tip.owner_id == user.id)
+        query_result = await session.execute(query)
+        result = query_result.scalars().all()
+
+        return result
+
+    @staticmethod
+    async def delete_tip_by_id(tip_id: int,
+                               session: AsyncSession,
+                               user):
+        tip = await session.get(Salary, tip_id)
+
+        await session.delete(tip)
+        await session.commit()
+
+        return tip

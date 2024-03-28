@@ -31,7 +31,7 @@ fastapi_users = FastAPIUsers[User, int](
 current_user = fastapi_users.current_user()
 
 
-@router.post('/')
+@router.post('/', status_code=201)
 async def add_salary(salary: SalaryCreate,
                      session: AsyncSession = Depends(get_async_session),
                      user: User = Depends(current_user),
@@ -46,8 +46,8 @@ async def add_salary(salary: SalaryCreate,
 
 @router.get('/all_salary', response_model=List[SalaryRead])
 async def read_all_salary(session: AsyncSession = Depends(get_async_session),
-                         user: User = Depends(current_user),
-                         crud_services: CRUDincome = Depends(CRUDincome)):
+                          user: User = Depends(current_user),
+                          crud_services: CRUDincome = Depends(CRUDincome)):
     salaries = await crud_services.get_all_salary(session=session, user=user)
 
     if salaries == []:
