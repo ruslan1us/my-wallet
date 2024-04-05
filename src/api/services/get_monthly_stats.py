@@ -9,9 +9,11 @@ from src.api.auth.manager import get_user_manager
 from src.api.auth.models import User
 from src.api.expense.models import Expense
 from src.api.expense.schemas import ExpenseRead
+from src.api.income.models import Salary, Tip
+from src.api.income.schemas import SalaryRead
 from src.database import get_async_session
 
-from pydantic import Field, BaseModel
+from src.api.services.models import Month
 
 from typing import List
 
@@ -29,12 +31,8 @@ fastapi_users = FastAPIUsers[User, int](
 current_user = fastapi_users.current_user()
 
 
-class Month(BaseModel):
-    month: int = Field(None, ge=1, le=12)
-
-
-@router.get('/monthly_expenses_stats', response_model=List[ExpenseRead])
-async def get_monthly_expenses_stats(month: Month = Depends(Month),
+@router.get('/monthly_expense_stats', response_model=List[ExpenseRead])
+async def get_monthly_expense_stats(month: Month = Depends(Month),
                                      session: AsyncSession = Depends(get_async_session),
                                      user: User = Depends(current_user)):
     month = month.model_dump()
@@ -44,7 +42,32 @@ async def get_monthly_expenses_stats(month: Month = Depends(Month),
     query_result = await session.execute(expense_query)
     result = query_result.scalars().all()
 
-    if result == []:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='You have no expenses this month')
+    return result
+
+
+@router.get('/monthly_salary_stats', response_model=List[SalaryRead])
+async def get_monthly_salary_stats(month: Month = Depends(Month),
+                                   session: AsyncSession = Depends(get_async_session),
+                                   user: User = Depends(current_user)):
+    month = month.model_dump()
+    salary_query = select(Salary).where(month.get('month') == func.date_part('month', Salary.date),
+                                        Salary.owner_id == user.id)
+
+    query_result = await session.execute(salary_query)
+    result = query_result.scalars().all()
+
+    return result
+
+
+@router.get('/monthly_tip_stats')
+async def get_monthly_tip_stats(month: Month = Depends(Month),
+                                session: AsyncSession = Depends(get_async_session),
+                                user: User = Depends(current_user)):
+    month = month.model_dump()
+    tip_query = select(Tip).where(month.get('month') == func.date_part('month', Tip.date),
+                                  Tip.owner_id == user.id)
+
+    query_result = await session.execute(tip_query)
+    result = query_result.scalars().all()
 
     return result
