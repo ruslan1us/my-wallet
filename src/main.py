@@ -15,7 +15,7 @@ from src.api.routers.expense_router import router as expense_router
 from src.api.routers.income_router import router as income_router
 from src.api.routers.auth_routers import router as auth_router
 from src.api.routers.auth_routers import jwt_router as jwt_auth_router
-from src.api.services.get_monthly_stats import router as services_router
+from src.api.routers.monthly_router import router as services_router
 
 
 @asynccontextmanager

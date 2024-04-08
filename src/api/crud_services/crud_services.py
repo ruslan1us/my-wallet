@@ -2,23 +2,11 @@ from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.api.auth.auth import auth_backend
-from src.api.auth.manager import get_user_manager
-from src.api.auth.models import User
 from src.api.expense.models import MoneySpinnerTable, Expense
 from src.api.expense.schemas import ExpenseCreate, MoneySpinnerCreate
 
-from fastapi_users import FastAPIUsers
-
 from src.api.income.models import Salary, Tip
 from src.api.income.schemas import SalaryCreate, TipCreate
-
-fastapi_users = FastAPIUsers[User, int](
-    get_user_manager,
-    [auth_backend],
-)
-
-current_user = fastapi_users.current_user()
 
 
 class CRUDexpense:
