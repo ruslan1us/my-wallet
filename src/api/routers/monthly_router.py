@@ -14,7 +14,7 @@ from src.database import get_async_session
 
 from fastapi_users import FastAPIUsers
 
-from src.api.services.crud_monthly_stats import CRUDmonth
+from src.api.crud_services.crud_monthly import CRUDmonth
 
 router = APIRouter(
     prefix='/services',
