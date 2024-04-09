@@ -1,8 +1,8 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, status
-from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.exceptions import HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.auth.auth import auth_backend
 from src.api.auth.manager import get_user_manager
