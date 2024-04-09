@@ -17,7 +17,7 @@ from fastapi_users import FastAPIUsers
 from src.api.crud_services.crud_monthly import CRUDmonth
 
 router = APIRouter(
-    prefix='/services',
+    prefix='/services/monthly',
     tags=['services']
 )
 
@@ -29,7 +29,7 @@ fastapi_users = FastAPIUsers[User, int](
 current_user = fastapi_users.current_user()
 
 
-@router.get('/monthly_expense', response_model=List[ExpenseRead])
+@router.get('/expense', response_model=List[ExpenseRead])
 async def get_monthly_expense(month: Month = Depends(Month),
                               session: AsyncSession = Depends(get_async_session),
                               user: User = Depends(current_user),
@@ -46,7 +46,7 @@ async def get_monthly_expense(month: Month = Depends(Month),
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
-@router.get('/monthly_salary', response_model=List[SalaryRead])
+@router.get('/salary', response_model=List[SalaryRead])
 async def get_monthly_salary(month: Month = Depends(Month),
                              session: AsyncSession = Depends(get_async_session),
                              user: User = Depends(current_user),
