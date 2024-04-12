@@ -33,6 +33,9 @@ async def all_expenses_amounts(month: Month = Depends(Month),
     try:
         expenses_amount = await services.get_all_expenses_amounts(month=month, session=session, user=user)
 
+        if expenses_amount == [None]:
+            raise Exception
+
         return expenses_amount
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -49,3 +52,27 @@ async def all_income_amounts(month: Month = Depends(Month),
         return income_amounts
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+
+@router.get('/stats_by_month')
+async def stats_by_month(month: Month = Depends(Month),
+                         session: AsyncSession = Depends(get_async_session),
+                         user: User = Depends(current_user),
+                         services: Services = Depends(Services)):
+    try:
+        expenses_amount = await services.get_all_expenses_amounts(month=month, session=session, user=user)
+        income_amounts = await services.get_all_income_amounts(month=month, session=session, user=user)
+
+        if expenses_amount == [None] and income_amounts != [None]:
+            return income_amounts
+
+        if income_amounts == [None] and expenses_amount != [None]:
+            return expenses_amount
+
+        result = income_amounts[0] - expenses_amount[0]
+
+        return result
+
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
