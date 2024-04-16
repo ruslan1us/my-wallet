@@ -44,3 +44,43 @@ class CRUDmonth:
         result = query_result.scalars().all()
 
         return result
+
+class CRUDyear:
+    @staticmethod
+    async def get_year_expense(year,
+                               session: AsyncSession,
+                               user):
+        year = year.model_dump()
+        expense_query = select(Expense).where(year.get('year') == func.date_part('year', Expense.expensed_at),
+                                              Expense.owner_id == user.id)
+
+        query_result = await session.execute(expense_query)
+        result = query_result.scalars().all()
+
+        return result
+
+    @staticmethod
+    async def get_year_salary(year,
+                              session: AsyncSession,
+                              user):
+        year = year.model_dump()
+        salary_query = select(Salary).where(year.get('year') == func.date_part('year', Salary.date),
+                                            Salary.owner_id == user.id)
+
+        query_result = await session.execute(salary_query)
+        result = query_result.scalars().all()
+
+        return result
+
+    @staticmethod
+    async def get_year_tip(year,
+                           session: AsyncSession,
+                           user):
+        year = year.model_dump()
+        tip_query = select(Tip).where(year.get('year') == func.date_part('year', Tip.date),
+                                      Tip.owner_id == user.id)
+
+        query_result = await session.execute(tip_query)
+        result = query_result.scalars().all()
+
+        return result
