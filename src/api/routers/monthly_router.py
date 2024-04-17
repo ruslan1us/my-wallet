@@ -9,12 +9,12 @@ from src.api.auth.manager import get_user_manager
 from src.api.auth.models import User
 from src.api.expense.schemas import ExpenseRead
 from src.api.income.schemas import SalaryRead, TipRead
-from src.api.services.models import Month, Year
+from src.api.services.models import Month, Year, Day
 from src.database import get_async_session
 
 from fastapi_users import FastAPIUsers
 
-from src.api.crud_services.crud_monthly import CRUDmonth, CRUDyear
+from src.api.crud_services.crud_monthly import CRUDmonth, CRUDyear, CRUDday
 
 router = APIRouter(
     prefix='/services/monthly',
@@ -126,6 +126,24 @@ async def get_year_tip(year: Year = Depends(Year),
             raise Exception
 
         return tip
+
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+
+@router.get('/day_expense', response_model=List[ExpenseRead])
+async def get_day_expense(day: Day = Depends(Day),
+                          month: Month = Depends(Month),
+                          session: AsyncSession = Depends(get_async_session),
+                          user: User = Depends(current_user),
+                          crud_services: CRUDday = Depends(CRUDday)):
+    try:
+        expenses = await crud_services.get_day_expense(day=day, month=month, session=session, user=user)
+
+        if expenses == []:
+            raise Exception
+
+        return expenses
 
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)

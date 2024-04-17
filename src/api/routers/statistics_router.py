@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.api.auth.auth import auth_backend
 from src.api.auth.manager import get_user_manager
 from src.api.auth.models import User
-from src.api.services.models import Month
+from src.api.services.models import Month, Day
 from src.database import get_async_session
 
 from fastapi_users import FastAPIUsers
@@ -73,6 +73,24 @@ async def stats_by_month(month: Month = Depends(Month),
 
         return result
 
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+
+@router.get('/all_expenses_amounts_by_day')
+async def all_expenses_amounts_by_day(day: Day = Depends(Day),
+                                      month: Month = Depends(Month),
+                                      session: AsyncSession = Depends(get_async_session),
+                                      user: User = Depends(current_user),
+                                      services: Services = Depends(Services)):
+    try:
+        expenses_amount = await services.get_all_expenses_amounts_by_day(day=day, month=month,
+                                                                         session=session, user=user)
+
+        if expenses_amount == [None]:
+            raise Exception
+
+        return expenses_amount
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 

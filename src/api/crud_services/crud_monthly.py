@@ -84,3 +84,21 @@ class CRUDyear:
         result = query_result.scalars().all()
 
         return result
+
+
+class CRUDday:
+    @staticmethod
+    async def get_day_expense(day,
+                              month,
+                              session: AsyncSession,
+                              user):
+        day = day.model_dump()
+        month = month.model_dump()
+        expense_query = select(Expense).where(day.get('day') == func.date_part('day', Expense.expensed_at),
+                                              month.get('month') == func.date_part('month', Expense.expensed_at),
+                                              Expense.owner_id == user.id)
+
+        query_result = await session.execute(expense_query)
+        result = query_result.scalars().all()
+
+        return result
