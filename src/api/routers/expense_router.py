@@ -55,7 +55,7 @@ async def add_expense(expense: ExpenseCreate, session: AsyncSession = Depends(ge
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
 
-@router.delete('/', status_code=204)
+@router.delete('/{expense_id}', status_code=204)
 async def delete_expense_by_id(expense_id: int,
                                session: AsyncSession = Depends(get_async_session),
                                user: User = Depends(current_user),

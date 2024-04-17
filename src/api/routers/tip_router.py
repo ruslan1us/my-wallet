@@ -55,7 +55,7 @@ async def read_all_tips(session: AsyncSession = Depends(get_async_session),
     return tips
 
 
-@router.delete('/', status_code=204)
+@router.delete('/{tip_id}', status_code=204)
 async def delete_tip_by_id(tip_id: int,
                            session: AsyncSession = Depends(get_async_session),
                            user: User = Depends(current_user),

@@ -62,7 +62,7 @@ async def add_money_spinner(money_spinner: MoneySpinnerCreate,
         raise HTTPException(status_code=status.HTTP_409_CONFLICT)
 
 
-@router.delete('/', status_code=204)
+@router.delete('/{money_spinner_id}', status_code=204)
 async def delete_money_spinner_by_id(money_spinner_id: int,
                                      session: AsyncSession = Depends(get_async_session),
                                      user: User = Depends(current_user),

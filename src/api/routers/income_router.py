@@ -56,7 +56,7 @@ async def read_all_salary(session: AsyncSession = Depends(get_async_session),
     return salaries
 
 
-@router.delete('/', status_code=204)
+@router.delete('/{salary_id}', status_code=204)
 async def delete_salary_by_id(salary_id: int,
                               session: AsyncSession = Depends(get_async_session),
                               user: User = Depends(current_user),
