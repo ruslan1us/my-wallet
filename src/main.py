@@ -17,6 +17,7 @@ from src.api.routers.auth_routers import router as auth_router
 from src.api.routers.auth_routers import jwt_router as jwt_auth_router
 from src.api.routers.monthly_router import router as monthly_router
 from src.api.routers.statistics_router import router as services_router
+from src.database import create_tables, delete_tables
 
 
 @asynccontextmanager
