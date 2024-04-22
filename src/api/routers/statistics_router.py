@@ -97,3 +97,13 @@ async def get_year_tip(year: Year = Depends(Year),
 
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+
+@router.get('/biggest_expense')
+async def get_the_biggest_expense(session: AsyncSession = Depends(get_async_session),
+                                  user: User = Depends(current_user),
+                                  services: Services = Depends(Services)):
+
+    expense = await services.get_the_biggest_expense(session=session, user=user)
+
+    return expense
