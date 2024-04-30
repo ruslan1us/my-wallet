@@ -2,8 +2,6 @@ from fastapi_mail import ConnectionConfig
 
 from src.config import MAIL_FROM, MAIL_USERNAME, MAIL_PORT, MAIL_PASSWORD, MAIL_SERVER, MAIL_FROM_NAME
 
-from pathlib import Path
-
 conf = ConnectionConfig(
     MAIL_USERNAME=MAIL_USERNAME,
     MAIL_PASSWORD=MAIL_PASSWORD,

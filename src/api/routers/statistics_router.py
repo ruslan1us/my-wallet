@@ -120,7 +120,7 @@ async def send_mail_month_report(session: AsyncSession = Depends(get_async_sessi
     expense_dict_expense = expense[1][0].__dict__
 
     await send_email_async({
-                            'subject': 'test mail system',
+                            'subject': 'Moth Report',
                             'email_to': f'{user.email}',
                             'body': {'money_spinner': f'{expense_dict_money_spinner.get('name')}',
                                      'amount': f'{expense_dict_expense.get('amount')}',
@@ -128,5 +128,4 @@ async def send_mail_month_report(session: AsyncSession = Depends(get_async_sessi
                                      'name': f'{user.username}'}
                             })
 
-    return 'success'
-
+    return HTTPException(status_code=200, detail='success')
