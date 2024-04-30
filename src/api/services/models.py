@@ -1,5 +1,7 @@
-from pydantic import Field, BaseModel
+from pydantic import Field, BaseModel, EmailStr
 from src.api.time_func import set_year
+from typing import List, Dict, Any
+
 
 
 class Month(BaseModel):
@@ -12,3 +14,9 @@ class Year(BaseModel):
 
 class Day(BaseModel):
     day: int = Field(ge=1, le=31)
+
+
+class EmailSchema(BaseModel):
+    subject: str
+    email_to: List[EmailStr]
+    body: Dict[str, Any]

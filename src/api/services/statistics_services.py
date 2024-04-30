@@ -86,4 +86,4 @@ class Services:
         money_spinner_query_result = await session.execute(money_spinner_query)
         money_spinner_result = money_spinner_query_result.scalars().all()
 
-        return money_spinner_result, result
+        return [money_spinner_result, result]

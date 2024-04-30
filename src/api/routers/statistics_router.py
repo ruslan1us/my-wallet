@@ -11,6 +11,7 @@ from src.api.crud_services.crud_monthly import CRUDyear
 from src.api.expense.schemas import ExpenseRead
 from src.api.income.schemas import TipRead, SalaryRead
 from src.api.services.models import Month, Day, Year
+from src.api.services.send_mail import send_email_async
 from src.database import get_async_session
 
 from fastapi_users import FastAPIUsers
@@ -107,3 +108,25 @@ async def get_the_biggest_expense(session: AsyncSession = Depends(get_async_sess
     expense = await services.get_the_biggest_expense(session=session, user=user)
 
     return expense
+
+
+@router.get('/send_mail_month_report')
+async def send_mail_month_report(session: AsyncSession = Depends(get_async_session),
+                                 user: User = Depends(current_user),
+                                 services: Services = Depends(Services)):
+    expense = await services.get_the_biggest_expense(session=session, user=user)
+
+    expense_dict_money_spinner = expense[0][0].__dict__
+    expense_dict_expense = expense[1][0].__dict__
+
+    await send_email_async({
+                            'subject': 'test mail system',
+                            'email_to': f'{user.email}',
+                            'body': {'money_spinner': f'{expense_dict_money_spinner.get('name')}',
+                                     'amount': f'{expense_dict_expense.get('amount')}',
+                                     'date': f'{expense_dict_expense.get('expensed_at')}',
+                                     'name': f'{user.username}'}
+                            })
+
+    return 'success'
+
