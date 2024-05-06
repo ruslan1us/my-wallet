@@ -1,6 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, desc
 
+from fastapi.exceptions import HTTPException
+
 from src.api.expense.models import Expense, MoneySpinnerTable
 from src.api.income.models import Salary, Tip
 
@@ -78,6 +80,9 @@ class Services:
 
         query_result = await session.execute(query)
         result = query_result.scalars().unique().all()
+
+        if result == []:
+            return None
 
         money_spinner_id = result[0].expense_place
 

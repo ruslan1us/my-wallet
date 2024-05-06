@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, BackgroundTasks
 from fastapi.exceptions import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,7 +11,7 @@ from src.api.crud_services.crud_monthly import CRUDyear
 from src.api.expense.schemas import ExpenseRead
 from src.api.income.schemas import TipRead, SalaryRead
 from src.api.services.models import Month, Day, Year
-from src.api.services.send_mail import send_email_async
+from src.api.services.send_mail import send_email_async, send_email_background
 from src.database import get_async_session
 
 from fastapi_users import FastAPIUsers
@@ -111,21 +111,23 @@ async def get_the_biggest_expense(session: AsyncSession = Depends(get_async_sess
 
 
 @router.get('/send_mail_month_report')
-async def send_mail_month_report(session: AsyncSession = Depends(get_async_session),
+async def send_mail_month_report(background_tasks: BackgroundTasks,
+                                 session: AsyncSession = Depends(get_async_session),
                                  user: User = Depends(current_user),
                                  services: Services = Depends(Services)):
     expense = await services.get_the_biggest_expense(session=session, user=user)
 
+    if expense == None:
+        return HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
     expense_dict_money_spinner = expense[0][0].__dict__
     expense_dict_expense = expense[1][0].__dict__
 
-    await send_email_async({
-                            'subject': 'Moth Report',
-                            'email_to': f'{user.email}',
-                            'body': {'money_spinner': f'{expense_dict_money_spinner.get('name')}',
-                                     'amount': f'{expense_dict_expense.get('amount')}',
-                                     'date': f'{expense_dict_expense.get('expensed_at')}',
-                                     'name': f'{user.username}'}
-                            })
-
-    return HTTPException(status_code=200, detail='success')
+    send_email_background(background_tasks, {
+                          'subject': 'Month Report',
+                          'email_to': f'{user.email}',
+                          'body': {'money_spinner': f'{expense_dict_money_spinner.get('name')}',
+                                   'amount': f'{expense_dict_expense.get('amount')}',
+                                   'date': f'{expense_dict_expense.get('expensed_at')}',
+                                   'name': f'{user.username}'}
+                          })

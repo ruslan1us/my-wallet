@@ -6,3 +6,6 @@ src/api/expense/__pycache__/
 migrations/__pycache__/
 /.env
 README.md
+.DS_Store
+migrations/.DS_Store
+src/.DS_Store
