@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.services.send_mail import send_email_background
-from src.api.tasks.tasks import get_all_users
 from src.database import get_async_session
 
 from src.api.services.statistics_services import Services
@@ -12,12 +11,12 @@ router = APIRouter(
 )
 
 
-@router.get('/send_all_users_report')
+@router.get('/send_report')
 async def send_all_users_report(background_tasks: BackgroundTasks,
                                 session: AsyncSession = Depends(get_async_session),
                                 services: Services = Depends(Services)):
 
-    users = await get_all_users(session=session)
+    users = await services.get_all_users(session=session)
 
     for user in users:
         expense = await services.get_the_biggest_expense(session=session, user=user)
@@ -36,5 +35,3 @@ async def send_all_users_report(background_tasks: BackgroundTasks,
                      'date': f'{expense_dict_expense.get('expensed_at')}',
                      'name': f'{user.username}'}
         })
-
-    return 'success'
