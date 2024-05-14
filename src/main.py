@@ -20,11 +20,18 @@ from src.api.routers.statistics_router import router as services_router
 from src.api.routers.tasks_router import router as report_router
 from src.database import create_tables, delete_tables
 
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+
+from redis import asyncio as aioredis
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # await create_tables()
     print('Starting...')
+    redis = aioredis.from_url("redis://localhost")
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
     yield
     # await delete_tables()
     print('Off...')

@@ -1,13 +1,13 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, desc
 
-from fastapi.exceptions import HTTPException
-
 from src.api.auth.models import User
 from src.api.expense.models import Expense, MoneySpinnerTable
 from src.api.income.models import Salary, Tip
 
 from src.api.time_func import get_month
+
+from fastapi_cache.decorator import cache
 
 
 class Services:
@@ -26,6 +26,7 @@ class Services:
         return result
 
     @staticmethod
+    @cache(expire=60)
     async def get_all_income_amounts(month,
                                      session: AsyncSession,
                                      user):

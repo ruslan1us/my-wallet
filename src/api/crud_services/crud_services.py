@@ -8,9 +8,12 @@ from src.api.expense.schemas import ExpenseCreate, MoneySpinnerCreate
 from src.api.income.models import Salary, Tip
 from src.api.income.schemas import SalaryCreate, TipCreate
 
+from fastapi_cache.decorator import cache
+
 
 class CRUDexpense:
     @staticmethod
+    @cache(expire=60)
     async def get_expenses_by_user(session: AsyncSession,
                                    user):
         query = (select(MoneySpinnerTable).options(joinedload(MoneySpinnerTable.expenses))
@@ -46,6 +49,7 @@ class CRUDexpense:
 
 class CRUDmoneyspinner:
     @staticmethod
+    @cache(expire=60)
     async def get_money_spinners_by_user(session: AsyncSession,
                                          user):
         query = select(MoneySpinnerTable).where(MoneySpinnerTable.owner_id == user.id)
@@ -80,6 +84,7 @@ class CRUDmoneyspinner:
 
 class CRUDincome:
     @staticmethod
+    @cache(expire=60)
     async def get_all_salary(session: AsyncSession,
                              user):
         query = select(Salary).where(Salary.owner_id == user.id)
@@ -126,6 +131,7 @@ class CRUDtip:
         return new_tip
 
     @staticmethod
+    @cache(expire=60)
     async def get_all_tips(session: AsyncSession,
                            user):
         query = select(Tip).where(Tip.owner_id == user.id)

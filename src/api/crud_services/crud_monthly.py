@@ -4,9 +4,13 @@ from sqlalchemy import select, func
 from src.api.expense.models import Expense
 from src.api.income.models import Salary, Tip
 
+from fastapi_cache.decorator import cache
+
+
 
 class CRUDmonth:
     @staticmethod
+    @cache(expire=60)
     async def get_monthly_expense(month,
                                   session: AsyncSession,
                                   user):
@@ -20,6 +24,7 @@ class CRUDmonth:
         return result
 
     @staticmethod
+    @cache(expire=60)
     async def get_monthly_salary(month,
                                  session: AsyncSession,
                                  user):
@@ -33,6 +38,7 @@ class CRUDmonth:
         return result
 
     @staticmethod
+    @cache(expire=60)
     async def get_monthly_tip(month,
                               session: AsyncSession,
                               user):
@@ -47,6 +53,7 @@ class CRUDmonth:
 
 class CRUDyear:
     @staticmethod
+    @cache(expire=120)
     async def get_year_expense(year,
                                session: AsyncSession,
                                user):
@@ -60,6 +67,7 @@ class CRUDyear:
         return result
 
     @staticmethod
+    @cache(expire=120)
     async def get_year_salary(year,
                               session: AsyncSession,
                               user):
@@ -73,6 +81,7 @@ class CRUDyear:
         return result
 
     @staticmethod
+    @cache(expire=120)
     async def get_year_tip(year,
                            session: AsyncSession,
                            user):
