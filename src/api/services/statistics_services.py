@@ -105,3 +105,22 @@ class Services:
 
         return users
 
+    @staticmethod
+    async def add_budget_to_user(new_budget,
+                                 session: AsyncSession,
+                                 user):
+
+        user.budget = new_budget
+
+        await session.commit()
+
+    @staticmethod
+    async def get_users_budget(session: AsyncSession,
+                               user):
+        query = select(User.budget).where(User.id == user.id)
+
+        query_result = await session.execute(query)
+
+        result = query_result.scalars().all()
+
+        return result

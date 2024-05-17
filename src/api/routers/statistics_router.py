@@ -16,6 +16,9 @@ from src.database import get_async_session
 
 from fastapi_users import FastAPIUsers
 
+from fastapi_cache.decorator import cache
+
+
 from src.api.services.statistics_services import Services
 
 router = APIRouter(
@@ -131,3 +134,26 @@ async def send_mail_month_report(background_tasks: BackgroundTasks,
                                    'date': f'{expense_dict_expense.get('expensed_at')}',
                                    'name': f'{user.username}'}
                           })
+
+
+@router.get('/add_budget')
+async def add_budget_to_user(new_budget: float,
+                             session: AsyncSession = Depends(get_async_session),
+                             user: User = Depends(current_user),
+                             services: Services = Depends(Services)):
+    try:
+        new_budget = await services.add_budget_to_user(new_budget=new_budget, session=session, user=user)
+
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+
+
+@router.get('/get_users_budget')
+@cache(expire=60)
+async def get_users_budget(session: AsyncSession = Depends(get_async_session),
+                           user: User = Depends(current_user),
+                           services: Services = Depends(Services)):
+
+    budget = await services.get_users_budget(session=session, user=user)
+
+    return budget
