@@ -15,6 +15,8 @@ from src.database import get_async_session
 
 from fastapi_users import FastAPIUsers
 
+from fastapi_cache.decorator import cache
+
 from src.api.crud_services.crud_monthly import CRUDmonth, CRUDday
 
 router = APIRouter(
@@ -31,6 +33,7 @@ current_user = fastapi_users.current_user()
 
 
 @router.get('/expense', response_model=List[ExpenseRead])
+@cache(expire=60)
 async def get_monthly_expense(month: Month = Depends(Month),
                               session: AsyncSession = Depends(get_async_session),
                               user: User = Depends(current_user),
@@ -48,6 +51,7 @@ async def get_monthly_expense(month: Month = Depends(Month),
 
 
 @router.get('/salary', response_model=List[SalaryRead])
+@cache(expire=60)
 async def get_monthly_salary(month: Month = Depends(Month),
                              session: AsyncSession = Depends(get_async_session),
                              user: User = Depends(current_user),
@@ -65,6 +69,7 @@ async def get_monthly_salary(month: Month = Depends(Month),
 
 
 @router.get('/monthly_tip', response_model=List[TipRead])
+@cache(expire=60)
 async def get_monthly_tip(month: Month = Depends(Month),
                           session: AsyncSession = Depends(get_async_session),
                           user: User = Depends(current_user),
@@ -116,6 +121,7 @@ async def all_expenses_amounts(month: Month = Depends(Month),
 
 
 @router.get('/all_income_amounts')
+@cache(expire=60)
 async def all_income_amounts(month: Month = Depends(Month),
                              session: AsyncSession = Depends(get_async_session),
                              user: User = Depends(current_user),
@@ -129,6 +135,7 @@ async def all_income_amounts(month: Month = Depends(Month),
 
 
 @router.get('/stats_by_month')
+@cache(expire=60)
 async def stats_by_month(month: Month = Depends(Month),
                          session: AsyncSession = Depends(get_async_session),
                          user: User = Depends(current_user),

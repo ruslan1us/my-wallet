@@ -12,6 +12,8 @@ from src.database import get_async_session
 
 from fastapi_users import FastAPIUsers
 
+from fastapi_cache.decorator import cache
+
 from src.api.crud_services.crud_services import CRUDtip
 
 router = APIRouter(
@@ -44,6 +46,7 @@ async def add_tip(tip: TipCreate,
 
 
 @router.get('/all_tip', response_model=List[TipRead])
+@cache(expire=60)
 async def read_all_tips(session: AsyncSession = Depends(get_async_session),
                         user: User = Depends(current_user),
                         crud_services: CRUDtip = Depends(CRUDtip)):

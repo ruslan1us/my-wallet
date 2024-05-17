@@ -14,6 +14,8 @@ from src.api.auth.models import User
 from src.api.income.schemas import SalaryCreate, SalaryRead
 from src.database import get_async_session
 
+from fastapi_cache.decorator import cache
+
 from src.api.crud_services.crud_services import CRUDincome
 
 router = APIRouter(
@@ -45,6 +47,7 @@ async def add_salary(salary: SalaryCreate,
 
 
 @router.get('/all_salary', response_model=List[SalaryRead])
+@cache(expire=60)
 async def read_all_salary(session: AsyncSession = Depends(get_async_session),
                           user: User = Depends(current_user),
                           crud_services: CRUDincome = Depends(CRUDincome)):

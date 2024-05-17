@@ -13,6 +13,8 @@ from src.database import get_async_session
 
 from fastapi_users import FastAPIUsers
 
+from fastapi_cache.decorator import cache
+
 from src.api.crud_services.crud_services import CRUDexpense
 
 
@@ -32,6 +34,7 @@ current_user = fastapi_users.current_user()
 
 
 @router.get('/expenses', status_code=200, response_model=List[MoneySpinnerReadWithExpenses])
+@cache(expire=60)
 async def read_expenses_by_user(session: AsyncSession = Depends(get_async_session),
                                 user: User = Depends(current_user),
                                 crud_services: CRUDexpense = Depends(CRUDexpense)):

@@ -7,8 +7,6 @@ from src.api.income.models import Salary, Tip
 
 from src.api.time_func import get_month
 
-from fastapi_cache.decorator import cache
-
 
 class Services:
     @staticmethod
@@ -26,7 +24,6 @@ class Services:
         return result
 
     @staticmethod
-    @cache(expire=60)
     async def get_all_income_amounts(month,
                                      session: AsyncSession,
                                      user):

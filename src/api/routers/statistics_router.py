@@ -53,6 +53,7 @@ async def all_expenses_amounts_by_day(day: Day = Depends(Day),
 
 
 @router.get('/year_expense', response_model=List[ExpenseRead])
+@cache(expire=120)
 async def get_year_expense(year: Year = Depends(Year),
                            session: AsyncSession = Depends(get_async_session),
                            user: User = Depends(current_user),
@@ -70,6 +71,7 @@ async def get_year_expense(year: Year = Depends(Year),
 
 
 @router.get('/year_salary', response_model=List[SalaryRead])
+@cache(expire=120)
 async def get_year_salary(year: Year = Depends(Year),
                           session: AsyncSession = Depends(get_async_session),
                           user: User = Depends(current_user),
@@ -87,6 +89,7 @@ async def get_year_salary(year: Year = Depends(Year),
 
 
 @router.get('/year_tip', response_model=List[TipRead])
+@cache(expire=120)
 async def get_year_tip(year: Year = Depends(Year),
                        session: AsyncSession = Depends(get_async_session),
                        user: User = Depends(current_user),
