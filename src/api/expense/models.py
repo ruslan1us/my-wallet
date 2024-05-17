@@ -27,3 +27,12 @@ class Expense(Base):
     expensed_at: Mapped[datetime] = mapped_column(default=set_date)
     expense_place: Mapped[int] = mapped_column(ForeignKey('money_spinner.id'))
     owner_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
+
+
+class Subscription(Base):
+    __tablename__ = 'subscription'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str]
+    amount: Mapped[float]
+    owner_id: Mapped[int] = mapped_column(ForeignKey('users.id'))

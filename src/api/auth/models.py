@@ -1,8 +1,9 @@
-from datetime import datetime, timezone, UTC
-from sqlalchemy import String, TIMESTAMP, Boolean
+from datetime import datetime
+from sqlalchemy import String, Boolean
 from fastapi_users.db import SQLAlchemyBaseUserTable
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from src.api.expense.models import Subscription
 from src.base_maker import Base
 
 from src.api.time_func import set_date
@@ -20,6 +21,8 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     hashed_password: Mapped[str] = mapped_column(
         String(length=1024), nullable=False
     )
+    budget: Mapped[float] = mapped_column(nullable=True)
+    subscriptions: Mapped[list["Subscription"]] = relationship("Subscription")
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_superuser: Mapped[bool] = mapped_column(
         Boolean, default=False, nullable=False
