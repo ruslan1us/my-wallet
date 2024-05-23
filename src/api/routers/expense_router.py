@@ -17,7 +17,6 @@ from fastapi_cache.decorator import cache
 
 from src.api.crud_services.crud_services import CRUDexpense
 
-
 router = APIRouter(
     prefix='/expenses',
     tags=['expenses']

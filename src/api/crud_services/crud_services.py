@@ -2,8 +2,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.api.expense.models import MoneySpinnerTable, Expense
-from src.api.expense.schemas import ExpenseCreate, MoneySpinnerCreate
+from src.api.expense.models import MoneySpinnerTable, Expense, Subscription
+from src.api.expense.schemas import ExpenseCreate, MoneySpinnerCreate, SubscriptionCreate
 
 from src.api.income.models import Salary, Tip
 from src.api.income.schemas import SalaryCreate, TipCreate
@@ -138,9 +138,43 @@ class CRUDtip:
     async def delete_tip_by_id(tip_id: int,
                                session: AsyncSession,
                                user):
-        tip = await session.get(Salary, tip_id)
+        tip = await session.get(Tip, tip_id)
 
         await session.delete(tip)
         await session.commit()
 
         return tip
+
+
+class CRUDSubscription:
+    @staticmethod
+    async def add_subscription(sub: SubscriptionCreate,
+                               session: AsyncSession,
+                               user):
+        new_sub = Subscription(**sub.model_dump(), owner_id=user.id)
+
+        session.add(new_sub)
+        await session.commit()
+        await session.refresh(new_sub)
+
+        return new_sub
+
+    @staticmethod
+    async def get_all_subscriptions(session: AsyncSession,
+                                    user):
+        query = select(Subscription).where(Subscription.owner_id == user.id)
+        query_result = await session.execute(query)
+        result = query_result.scalars().all()
+
+        return result
+
+    @staticmethod
+    async def delete_subscription_by_id(sub_id: int,
+                                        session: AsyncSession,
+                                        user):
+        sub = await session.get(Subscription, sub_id)
+
+        await session.delete(sub)
+        await session.commit()
+
+        return sub

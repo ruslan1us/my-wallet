@@ -18,6 +18,7 @@ from src.api.routers.auth_routers import jwt_router as jwt_auth_router
 from src.api.routers.monthly_router import router as monthly_router
 from src.api.routers.statistics_router import router as services_router
 from src.api.routers.tasks_router import router as report_router
+from src.api.routers.subscriptions_router import router as subscription_router
 from src.database import create_tables, delete_tables
 
 from fastapi_cache import FastAPICache
@@ -52,6 +53,7 @@ ROUTERS = [
     auth_router,
     jwt_auth_router,
     expense_router,
+    subscription_router,
     money_spinner_router,
     income_router,
     tip_router,

@@ -37,3 +37,14 @@ class MoneySpinnerReadWithoutExpenses(MoneySpinnerCreate):
 
 class MoneySpinnerReadWithExpenses(MoneySpinnerReadWithoutExpenses):
     expenses: List[ExpenseRead]
+
+
+class SubscriptionCreate(BaseModel):
+    name: str
+    amount: float
+
+
+class SubscriptionRead(BaseModel):
+    id: int
+    name: str
+    amount: float

@@ -11,7 +11,7 @@ class Salary(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
-    amount: Mapped[float]
+    amount: Mapped[float] = mapped_column(nullable=False)
     date: Mapped[datetime] = mapped_column(default=set_date)
     owner_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
 
@@ -20,6 +20,6 @@ class Tip(Base):
     __tablename__ = 'tip'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    amount: Mapped[float]
+    amount: Mapped[float] = mapped_column(nullable=False)
     date: Mapped[datetime] = mapped_column(default=set_date)
     owner_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
