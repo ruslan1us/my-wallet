@@ -33,6 +33,7 @@ current_user = fastapi_users.current_user()
 
 
 @router.get('/subscriptions', status_code=200, response_model=List[SubscriptionRead])
+@cache(expire=60)
 async def read_subscriptions_by_user(session: AsyncSession = Depends(get_async_session),
                                      user: User = Depends(current_user),
                                      crud_services: CRUDSubscription = Depends(CRUDSubscription)):

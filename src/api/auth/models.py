@@ -21,7 +21,7 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     hashed_password: Mapped[str] = mapped_column(
         String(length=1024), nullable=False
     )
-    budget: Mapped[float] = mapped_column(nullable=True)
+    budget: Mapped[float] = mapped_column(nullable=True, default=0.0)
     subscriptions: Mapped[list["Subscription"]] = relationship("Subscription")
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_superuser: Mapped[bool] = mapped_column(

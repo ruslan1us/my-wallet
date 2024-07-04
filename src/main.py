@@ -65,9 +65,11 @@ ROUTERS = [
 
 [app.include_router(router) for router in ROUTERS]
 
+
 @app.get('/')
 async def redirect_to_docs(request: Request):
     return RedirectResponse(f'{request.url}docs')
+
 
 if __name__ == "__main__":
     uvicorn.run(app=app)

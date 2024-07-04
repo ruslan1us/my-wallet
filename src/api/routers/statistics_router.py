@@ -124,7 +124,7 @@ async def send_mail_month_report(background_tasks: BackgroundTasks,
     expense = await services.get_the_biggest_expense(session=session, user=user)
 
     if expense == None:
-        return HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Email is not in the correct format')
 
     expense_dict_money_spinner = expense[0][0].__dict__
     expense_dict_expense = expense[1][0].__dict__
