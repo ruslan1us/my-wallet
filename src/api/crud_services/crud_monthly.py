@@ -4,9 +4,6 @@ from sqlalchemy import select, func
 from src.api.expense.models import Expense
 from src.api.income.models import Salary, Tip
 
-from fastapi_cache.decorator import cache
-
-
 
 class CRUDmonth:
     @staticmethod
