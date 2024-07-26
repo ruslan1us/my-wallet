@@ -33,7 +33,7 @@ fastapi_users = FastAPIUsers[User, int](
 current_user = fastapi_users.current_user()
 
 
-@router.get('/user_money_spinners', response_model=List[MoneySpinnerReadWithoutExpenses])
+@router.get('/user_money_spinners')     # response_model=List[MoneySpinnerReadWithoutExpenses]
 @cache(expire=60)
 async def read_money_spinners_by_user(session: AsyncSession = Depends(get_async_session),
                                       user: User = Depends(current_user),
@@ -44,10 +44,10 @@ async def read_money_spinners_by_user(session: AsyncSession = Depends(get_async_
         if money_spinners == []:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
-        return money_spinners
+        return {'status': 'success', 'data': money_spinners}
 
     except Exception:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Bad request information')
 
 
 @router.post('/', status_code=201)
@@ -59,10 +59,10 @@ async def add_money_spinner(money_spinner: MoneySpinnerCreate,
         new_money_spinner = await crud_services.add_money_spinner(money_spinner=money_spinner,
                                                                   session=session, user=user)
 
-        return new_money_spinner
+        return {'status': 'success', 'data': new_money_spinner, 'message': 'Money-spinner is successfully added'}
 
     except IntegrityError:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT)
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='Money-spinner is already exist')
 
 
 @router.delete('/{money_spinner_id}', status_code=204)
@@ -75,7 +75,7 @@ async def delete_money_spinner_by_id(money_spinner_id: int,
                                                                                session=session,
                                                                                user=user)
 
-        return deleted_money_spinner
+        return {'status': 'success', 'data': deleted_money_spinner, 'message': 'Money-spinner is successfully deleted'}
 
     except Exception:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='No money-spinner with such id')

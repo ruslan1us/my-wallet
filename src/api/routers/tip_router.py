@@ -39,7 +39,7 @@ async def add_tip(tip: TipCreate,
     try:
         new_tip = await crud_services.add_tip(tip=tip, session=session, user=user)
 
-        return new_tip
+        return {'status': 'success', 'data': new_tip, 'message': 'Tip is successfully added'}
 
     except Exception:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
@@ -55,7 +55,7 @@ async def read_all_tips(session: AsyncSession = Depends(get_async_session),
     if tips == []:
         raise HTTPException(status_code=404, detail='You have no tips')
 
-    return tips
+    return {'status': 'success', 'data': tips}
 
 
 @router.delete('/{tip_id}', status_code=204)
@@ -67,5 +67,6 @@ async def delete_tip_by_id(tip_id: int,
         deleted_tip = await crud_services.delete_tip_by_id(tip_id=tip_id, session=session,
                                                            user=user)
 
+        return {'status': 'success', 'data': deleted_tip, 'message': 'Tip is successfully deleted'}
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)

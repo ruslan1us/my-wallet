@@ -47,7 +47,7 @@ async def all_expenses_amounts_by_day(day: Day = Depends(Day),
         if expenses_amount == [None]:
             raise Exception
 
-        return expenses_amount
+        return {'status': 'success', 'data': expenses_amount}
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
@@ -64,7 +64,7 @@ async def get_year_expense(year: Year = Depends(Year),
         if expenses == []:
             raise Exception
 
-        return expenses
+        return {'status': 'success', 'data': expenses}
 
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -82,7 +82,7 @@ async def get_year_salary(year: Year = Depends(Year),
         if salary == []:
             raise Exception
 
-        return salary
+        return {'status': 'success', 'data': salary}
 
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -100,7 +100,7 @@ async def get_year_tip(year: Year = Depends(Year),
         if tip == []:
             raise Exception
 
-        return tip
+        return {'status': 'success', 'data': tip}
 
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -159,4 +159,4 @@ async def get_users_budget(session: AsyncSession = Depends(get_async_session),
 
     budget = await services.get_users_budget(session=session, user=user)
 
-    return budget
+    return {'status': 'success', 'data': budget}

@@ -32,7 +32,7 @@ fastapi_users = FastAPIUsers[User, int](
 current_user = fastapi_users.current_user()
 
 
-@router.get('/expense', response_model=List[ExpenseRead])
+@router.get('/expense')     # response_model=List[ExpenseRead]
 @cache(expire=60)
 async def get_monthly_expense(month: Month = Depends(Month),
                               session: AsyncSession = Depends(get_async_session),
@@ -44,13 +44,13 @@ async def get_monthly_expense(month: Month = Depends(Month),
         if expenses == []:
             raise Exception
 
-        return expenses
+        return {'status': 'success', 'data': expenses}
 
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
-@router.get('/salary', response_model=List[SalaryRead])
+@router.get('/salary')      # response_model=List[SalaryRead]
 @cache(expire=60)
 async def get_monthly_salary(month: Month = Depends(Month),
                              session: AsyncSession = Depends(get_async_session),
@@ -62,13 +62,13 @@ async def get_monthly_salary(month: Month = Depends(Month),
         if salary == []:
             raise Exception
 
-        return salary
+        return {'status': 'success', 'data': salary}
 
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
-@router.get('/monthly_tip', response_model=List[TipRead])
+@router.get('/monthly_tip')     # response_model=List[TipRead]
 @cache(expire=60)
 async def get_monthly_tip(month: Month = Depends(Month),
                           session: AsyncSession = Depends(get_async_session),
@@ -80,13 +80,13 @@ async def get_monthly_tip(month: Month = Depends(Month),
         if tip == []:
             raise Exception
 
-        return tip
+        return {'status': 'success', 'data': tip}
 
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
-@router.get('/day_expense', response_model=List[ExpenseRead])
+@router.get('/day_expense')     # response_model=List[ExpenseRead]
 async def get_day_expense(day: Day = Depends(Day),
                           month: Month = Depends(Month),
                           session: AsyncSession = Depends(get_async_session),
@@ -98,7 +98,7 @@ async def get_day_expense(day: Day = Depends(Day),
         if expenses == []:
             raise Exception
 
-        return expenses
+        return {'status': 'success', 'data': expenses}
 
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -115,7 +115,7 @@ async def all_expenses_amounts(month: Month = Depends(Month),
         if expenses_amount == [None]:
             raise Exception
 
-        return expenses_amount
+        return {'status': 'success', 'data': expenses_amount}
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
@@ -129,7 +129,7 @@ async def all_income_amounts(month: Month = Depends(Month),
     try:
         income_amounts = await services.get_all_income_amounts(month=month, session=session, user=user)
 
-        return income_amounts
+        return {'status': 'success', 'data': income_amounts}
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
@@ -152,7 +152,7 @@ async def stats_by_month(month: Month = Depends(Month),
 
         result = income_amounts[0] - expenses_amount[0]
 
-        return result
+        return {'status': 'success', 'data': result}
 
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)

@@ -42,7 +42,7 @@ async def read_subscriptions_by_user(session: AsyncSession = Depends(get_async_s
     if result == []:
         raise HTTPException(status_code=404, detail='You have no subscriptions')
 
-    return result
+    return {'status': 'success', 'data': result}
 
 
 @router.post('/', status_code=201)
@@ -52,7 +52,7 @@ async def add_subscription(sub: SubscriptionCreate, session: AsyncSession = Depe
     try:
         new_subscription = await crud_services.add_subscription(sub=sub, session=session, user=user)
 
-        return new_subscription
+        return {'status': 'success', 'data': new_subscription, 'message': 'Subscription successfully added'}
     except Exception:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
@@ -65,5 +65,7 @@ async def delete_subscription_by_id(sub_id: int,
     try:
         deleted_subscription = await crud_services.delete_subscription_by_id(sub_id=sub_id,
                                                                              session=session, user=user)
+
+        return {'status': 'success', 'data': deleted_subscription, 'message': 'Subscription is successfully deleted'}
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)

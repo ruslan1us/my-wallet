@@ -41,12 +41,12 @@ async def add_salary(salary: SalaryCreate,
     try:
         new_salary = await crud_services.add_salary(salary=salary, session=session, user=user)
 
-        return new_salary
+        return {'status': 'success', 'data': new_salary, 'message': 'Salary is successfully added'}
     except Exception:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Bad request information')
 
 
-@router.get('/all_salary', response_model=List[SalaryRead])
+@router.get('/all_salary')      # response_model=List[SalaryRead]
 @cache(expire=60)
 async def read_all_salary(session: AsyncSession = Depends(get_async_session),
                           user: User = Depends(current_user),
@@ -56,7 +56,7 @@ async def read_all_salary(session: AsyncSession = Depends(get_async_session),
     if salaries == []:
         raise HTTPException(status_code=404, detail='You have no salaries')
 
-    return salaries
+    return {'status': 'success', 'data': salaries}
 
 
 @router.delete('/{salary_id}', status_code=204)
@@ -68,5 +68,6 @@ async def delete_salary_by_id(salary_id: int,
         deleted_salary = await crud_services.delete_salary_by_id(salary_id=salary_id, session=session,
                                                                  user=user)
 
+        return {'status': 'success', 'data': deleted_salary, 'message': 'Salary is successfully deleted'}
     except Exception:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
