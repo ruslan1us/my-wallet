@@ -5,6 +5,7 @@ venv/
 __pycache__/
 src/api/expense/__pycache__/
 migrations/__pycache__/
+.pytest_cache/
 /.env
 README.md
 .DS_Store
