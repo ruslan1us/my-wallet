@@ -49,6 +49,20 @@ def event_loop(request):
 client = TestClient(app)
 
 
+@pytest.fixture(autouse=True, scope='session')
+def register_user():
+    response = client.post('/auth/register', json={
+        "email": "string",
+        "password": "string",
+        "is_active": True,
+        "is_superuser": False,
+        "is_verified": False,
+        "username": "string"
+    })
+
+    assert response.status_code == 201
+
+
 @pytest.fixture(scope="session")
 async def ac() -> AsyncGenerator[AsyncClient, None]:
     async with AsyncClient(app=app, base_url="http://test") as ac:

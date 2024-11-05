@@ -16,11 +16,11 @@ def test_register():
     assert response.status_code == 201
 
 
-@pytest.fixture(scope="module")
-def test_user():
-    return {"username": "string", "password": "string"}
+test_user = {"username": "string", "password": "string"}
 
 
-def test_login(test_user):
+def test_login():
     response = client.post("/auth/jwt/login", data=test_user)
+    token = response.cookies.get('my_wallet_cookie')
     assert response.status_code == 204
+    return token
